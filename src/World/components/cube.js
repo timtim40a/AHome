@@ -10,11 +10,9 @@ function createCube(w, h, d, colour) {
     // create a Mesh containing the geometry and material
     const cube = new Mesh(geometry, material)
 
-    cube.rotation.set(-0.5, -0.1, 0.8)
-
-    cube.tick = (delta) => {
-        rotateCube(cube, delta)
-    }
+    // cube.tick = (delta) => {
+    //     rotateCube(cube, delta)
+    // }
 
     return cube
 }

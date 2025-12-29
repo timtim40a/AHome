@@ -7,7 +7,9 @@ const setSize = (container, camera, renderer) => {
 }
 
 class Resizer {
-    constructor(container, camera, renderer) {
+    constructor(container, camera, renderer, controls = null) {
+        this.controls = controls
+
         // Set the camera's aspect ratio
         camera.aspect = container.clientWidth / container.clientHeight
 
@@ -28,7 +30,11 @@ class Resizer {
         })
     }
 
-    onResize() {}
+    onResize() {
+        if (this.controls) {
+            this.controls.update()
+        }
+    }
 }
 
 export { Resizer }
