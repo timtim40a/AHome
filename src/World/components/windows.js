@@ -1,4 +1,4 @@
-import { BoxGeometry, Mesh, MeshStandardMaterial, Group } from 'three'
+import { BoxGeometry, Mesh, MeshPhysicalMaterial, Group } from 'three'
 
 function createWindows(cubeWidth, cubeHeight, cubeDepth, gridSize) {
     const windows = new Group()
@@ -10,12 +10,16 @@ function createWindows(cubeWidth, cubeHeight, cubeDepth, gridSize) {
 
     // Create window geometry
     const geometry = new BoxGeometry(windowWidth, windowHeight, windowDepth)
-    const materialDark = new MeshStandardMaterial({ color: 0x000000 })
-    const materialYellow = new MeshStandardMaterial({ color: 0xffff00 })
+    const materialDark = new MeshPhysicalMaterial({ color: 0x000000 })
+    const materialYellow = new MeshPhysicalMaterial({
+        color: 0x222211, // base darkish window
+        emissive: 'yellow', // warm light color
+        emissiveIntensity: 3.0,
+    })
 
     // Calculate spacing
     const spacingX = cubeWidth / (gridSize + 1)
-    const spacingY = cubeHeight / (gridSize + 1)
+    const spacingY = spacingX / (gridSize + 1)
 
     // Create windows in a grid on the front face
     for (let i = 1; i <= gridSize; i++) {
@@ -24,7 +28,6 @@ function createWindows(cubeWidth, cubeHeight, cubeDepth, gridSize) {
                 geometry,
                 Math.random() < 0.5 ? materialDark : materialYellow
             )
-
             // Position on front face
             window.position.set(
                 -cubeWidth / 2 + i * spacingX,
