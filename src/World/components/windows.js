@@ -1,11 +1,17 @@
 import { BoxGeometry, Mesh, MeshPhysicalMaterial, Group } from 'three'
 
-function createWindows(cubeWidth, cubeHeight, cubeDepth, gridSize) {
+function createWindows(
+    cubeWidth,
+    cubeHeight,
+    cubeDepth,
+    gridWidth,
+    gridHeight
+) {
     const windows = new Group()
 
     // Calculate window dimensions (smaller than cube)
-    const windowWidth = cubeWidth / (gridSize + 2)
-    const windowHeight = cubeHeight / (gridSize + 2)
+    const windowWidth = cubeWidth / (gridWidth + 2)
+    const windowHeight = cubeHeight / (gridHeight + 2)
     const windowDepth = cubeDepth * 0.01 // Thin windows
 
     // Create window geometry
@@ -18,12 +24,12 @@ function createWindows(cubeWidth, cubeHeight, cubeDepth, gridSize) {
     })
 
     // Calculate spacing
-    const spacingX = cubeWidth / (gridSize + 1)
-    const spacingY = cubeHeight / (gridSize + 1)
+    const spacingX = cubeWidth / (gridWidth + 1)
+    const spacingY = cubeHeight / (gridHeight + 1)
 
     // Create windows in a grid on the front face
-    for (let i = 1; i <= gridSize; i++) {
-        for (let j = 1; j <= gridSize; j++) {
+    for (let i = 1; i <= gridWidth; i++) {
+        for (let j = 1; j <= gridHeight; j++) {
             const window = new Mesh(
                 geometry,
                 Math.random() < 0.5 ? materialDark : materialYellow

@@ -83,12 +83,14 @@ class World {
         )
 
         // Add windows as children of the cube
-        const gridSize = Math.floor(Math.random() * 6) + 2 // 1-3 windows per side
+        const gridWidth = Math.floor(Math.random() * 6) + 1 // 1-6 windows across
+        const gridHeight = Math.floor(Math.random() * 6) + 1 // 1-6 windows tall
         const windows = createWindows(
             cubeWidth,
             cubeHeight,
             cubeDepth,
-            gridSize
+            gridWidth,
+            gridHeight
         )
         cube.add(windows)
 
