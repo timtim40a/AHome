@@ -5,7 +5,8 @@ function createPyramidRoof(baseSize, randomOffset, height, colour) {
     const geometry = new ConeGeometry(
         Math.sqrt(Math.pow(baseSize, 2) * 2) / 2 + randomOffset, // Radius to fit base
         height,
-        4
+        4,
+        8
     )
 
     // Create a material

@@ -18,6 +18,8 @@ let renderer
 let loop
 let houses = [] // Array to track generated houses
 let controls // Camera controls
+let possibleRoofColors = [0xeb6e34, 0xebf0f2, 0x6b3115, 0x234201, 0x616161] // DarkRed, Brown, ForestGreen, DarkBlue
+let possibleBuildingColors = [0xf5f5dc, 0xffefd5, 0xd2b48c, 0xdeb887, 0xa0522d] // Beige, PapayaWhip, Tan, BurlyWood, Sienna
 
 class World {
     // 1. Create an instance of the World app
@@ -66,7 +68,11 @@ class World {
         const cubeWidth = Math.random() * 2 + 1 // 1-3
         const cubeHeight = Math.random() * 2 + 1 // 1-3
         const cubeDepth = cubeWidth
-        const cubeColor = new Color(Math.random(), Math.random(), Math.random())
+        const cubeColor = new Color(
+            possibleBuildingColors[
+                Math.floor(Math.random() * possibleBuildingColors.length)
+            ]
+        )
 
         // Create cube (house base)
         const cube = createCube(cubeWidth, cubeHeight, cubeDepth, cubeColor)
@@ -77,25 +83,23 @@ class World {
         )
 
         // Add windows as children of the cube
-        const gridSize = Math.floor(Math.random() * 3) + 1 // 1-3 windows per side
-        const windowColor = new Color(
-            Math.random() * 0.5,
-            Math.random() * 0.5,
-            Math.random() * 0.5
-        ) // Darker colors
+        const gridSize = Math.floor(Math.random() * 6) + 2 // 1-3 windows per side
         const windows = createWindows(
             cubeWidth,
             cubeHeight,
             cubeDepth,
-            gridSize,
-            windowColor
+            gridSize
         )
         cube.add(windows)
 
         // Add roof as child of the cube (either pyramid or flat)
         const usePyramidRoof = Math.random() > 0.5
         const roofRandomOffset = Math.random() * 0.2
-        const roofColor = new Color(Math.random(), Math.random(), Math.random())
+        const roofColor = new Color(
+            possibleRoofColors[
+                Math.floor(Math.random() * possibleRoofColors.length)
+            ]
+        )
 
         if (usePyramidRoof) {
             const roofHeight = Math.random() * 1 + 0.5 // 0.5-1.5

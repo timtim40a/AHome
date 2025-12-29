@@ -1,13 +1,13 @@
 import { AmbientLight, DirectionalLight, PointLight, SpotLight } from 'three'
 
 function createLights() {
-    const light = new AmbientLight('white', 3)
-    const spotlight = new SpotLight('white', 8) // TODO
+    const light = new AmbientLight('white', 0.7)
+    const dirlight = new DirectionalLight('orange', 4) // TODO
 
     light.position.set(0, 0, 0)
-    spotlight.position.set(-0.3, -1, 2)
+    dirlight.position.set(0.5, 2, 0)
 
-    light.add(spotlight)
+    light.add(dirlight)
     return light
 }
 

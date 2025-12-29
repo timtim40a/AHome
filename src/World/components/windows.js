@@ -1,22 +1,17 @@
 import { BoxGeometry, Mesh, MeshStandardMaterial, Group } from 'three'
 
-function createWindows(
-    cubeWidth,
-    cubeHeight,
-    cubeDepth,
-    gridSize,
-    windowColour
-) {
+function createWindows(cubeWidth, cubeHeight, cubeDepth, gridSize) {
     const windows = new Group()
 
     // Calculate window dimensions (smaller than cube)
-    const windowWidth = cubeWidth * 0.2
-    const windowHeight = cubeHeight * 0.15
-    const windowDepth = cubeDepth * 0.05 // Thin windows
+    const windowWidth = cubeWidth / (gridSize + 2)
+    const windowHeight = cubeHeight / (gridSize + 2)
+    const windowDepth = cubeDepth * 0.01 // Thin windows
 
     // Create window geometry
     const geometry = new BoxGeometry(windowWidth, windowHeight, windowDepth)
-    const material = new MeshStandardMaterial({ color: windowColour })
+    const materialDark = new MeshStandardMaterial({ color: 0x000000 })
+    const materialYellow = new MeshStandardMaterial({ color: 0xffff00 })
 
     // Calculate spacing
     const spacingX = cubeWidth / (gridSize + 1)
@@ -25,7 +20,10 @@ function createWindows(
     // Create windows in a grid on the front face
     for (let i = 1; i <= gridSize; i++) {
         for (let j = 1; j <= gridSize; j++) {
-            const window = new Mesh(geometry, material)
+            const window = new Mesh(
+                geometry,
+                Math.random() < 0.5 ? materialDark : materialYellow
+            )
 
             // Position on front face
             window.position.set(
