@@ -12,7 +12,7 @@ function createCameraControls(camera, canvas) {
     // Set some reasonable limits
     controls.minDistance = 5
     controls.maxDistance = 50
-    controls.maxPolarAngle = Math.PI * 0.75 // Prevent camera from going below ground
+    controls.maxPolarAngle = Math.PI * 0.49 // Prevent camera from going below ground
 
     return controls
 }
