@@ -87,8 +87,8 @@ class World {
         const aspectRatio = cubeHeight / cubeWidth
 
         // Base grid sizes (1-6 for each dimension)
-        let baseGridWidth = Math.floor(Math.random() * 6) + 1
-        let baseGridHeight = Math.floor(Math.random() * 6) + 1
+        let baseGridWidth = Math.floor(Math.random() * 5) + 3
+        let baseGridHeight = Math.floor(Math.random() * 5) + 3
 
         // Adjust based on building proportions
         if (aspectRatio > 1.2) {
@@ -117,12 +117,18 @@ class World {
         const gridWidth = Math.max(1, baseGridWidth)
         const gridHeight = Math.max(1, baseGridHeight)
 
+        // Generate random window properties independent of cube dimensions
+        const windowAspectRatio = Math.random() * 2 + 0.5 // Random aspect ratio between 0.5 and 2.5
+        const windowSizeFactor = Math.random() * 0.15 + 0.05 // Random size factor between 0.05 and 0.2
+
         const windows = createWindows(
             cubeWidth,
             cubeHeight,
             cubeDepth,
             gridWidth,
-            gridHeight
+            gridHeight,
+            windowAspectRatio,
+            windowSizeFactor
         )
         cube.add(windows)
 

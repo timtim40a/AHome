@@ -5,16 +5,19 @@ function createWindows(
     cubeHeight,
     cubeDepth,
     gridWidth,
-    gridHeight
+    gridHeight,
+    windowAspectRatio,
+    windowSizeFactor
 ) {
     const windows = new Group()
 
-    // Calculate window dimensions (smaller than cube)
-    const windowWidth = cubeWidth / (gridWidth + 2)
-    const windowHeight = cubeHeight / (gridHeight + 2)
+    // Calculate window dimensions based on independent aspect ratio
+    const baseWindowSize = Math.min(cubeWidth, cubeHeight) * windowSizeFactor
+    const windowWidth = baseWindowSize * Math.sqrt(windowAspectRatio)
+    const windowHeight = baseWindowSize / Math.sqrt(windowAspectRatio)
     const windowDepth = cubeDepth * 0.01 // Thin windows
 
-    // Create window geometry
+    // Create window geometry (will be adjusted if needed)
     const geometry = new BoxGeometry(windowWidth, windowHeight, windowDepth)
     const materialDark = new MeshPhysicalMaterial({ color: 0x000000 })
     const materialYellow = new MeshPhysicalMaterial({
@@ -27,11 +30,36 @@ function createWindows(
     const spacingX = cubeWidth / (gridWidth + 1)
     const spacingY = cubeHeight / (gridHeight + 1)
 
+    // Ensure windows don't intersect by checking if they're too large for the grid
+    const maxAllowedWidth = spacingX * 0.8 // Leave 20% margin for spacing
+    const maxAllowedHeight = spacingY * 0.8 // Leave 20% margin for spacing
+
+    // Adjust window size if it would cause intersections
+    let adjustedWindowWidth = Math.min(windowWidth, maxAllowedWidth)
+    let adjustedWindowHeight = Math.min(windowHeight, maxAllowedHeight)
+
+    // Maintain aspect ratio when adjusting size
+    const sizeRatio = Math.min(
+        maxAllowedWidth / windowWidth,
+        maxAllowedHeight / windowHeight
+    )
+    if (sizeRatio < 1) {
+        adjustedWindowWidth = windowWidth * sizeRatio
+        adjustedWindowHeight = windowHeight * sizeRatio
+    }
+
+    // Create new geometry with adjusted dimensions
+    const adjustedGeometry = new BoxGeometry(
+        adjustedWindowWidth,
+        adjustedWindowHeight,
+        windowDepth
+    )
+
     // Create windows in a grid on the front face
     for (let i = 1; i <= gridWidth; i++) {
         for (let j = 1; j <= gridHeight; j++) {
             const window = new Mesh(
-                geometry,
+                adjustedGeometry,
                 Math.random() < 0.5 ? materialDark : materialYellow
             )
             // Position on front face
