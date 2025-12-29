@@ -1,4 +1,4 @@
-import { Color } from 'three'
+import { Color, Group } from 'three'
 import { createCamera } from './components/camera.js'
 import { createCameraControls } from './components/cameraControls.js'
 import { createCube, rotateCube } from './components/cube.js'
@@ -12,15 +12,41 @@ import { createPyramidRoof } from './components/pyramidRoof.js'
 import { createWindows } from './components/windows.js'
 import { createFlatRoof } from './components/flatRoof.js'
 import { createGround } from './components/ground.js'
+import { createTree } from './components/trees.js'
 
 let camera
 let scene
 let renderer
 let loop
 let houses = [] // Array to track generated houses
+let treesGroup // Group to hold all trees
 let controls // Camera controls
 let possibleRoofColors = [0xeb6e34, 0xebf0f2, 0x6b3115, 0x234201, 0x616161] // DarkRed, Brown, ForestGreen, DarkBlue
 let possibleBuildingColors = [0xf5f5dc, 0xffefd5, 0xd2b48c, 0xdeb887, 0xa0522d] // Beige, PapayaWhip, Tan, BurlyWood, Sienna
+
+function createTrees(count = 5) {
+    const trees = new Group()
+
+    for (let i = 0; i < count; i++) {
+        const tree = createTree()
+
+        // Position trees randomly around the scene (closer since trees are smaller)
+        const angle = (i / count) * Math.PI * 2
+        const distance = Math.random() * 6 + 3 // 3-9 units from center (closer)
+        tree.position.set(
+            Math.cos(angle) * distance,
+            0,
+            Math.sin(angle) * distance
+        )
+
+        // Add slight rotation variation
+        tree.rotation.y = Math.random() * Math.PI * 2
+
+        trees.add(tree)
+    }
+
+    return trees
+}
 
 class World {
     // 1. Create an instance of the World app
@@ -72,6 +98,11 @@ class World {
             )
         })
         houses = []
+
+        // Remove previous trees
+        if (treesGroup) {
+            scene.remove(treesGroup)
+        }
 
         // Generate random parameters
         const cubeWidth = Math.random() * 2 + 1 // 1-3
@@ -177,6 +208,10 @@ class World {
             flatRoof.castShadow = true
             cube.add(flatRoof)
         }
+
+        // Generate new trees
+        treesGroup = createTrees(Math.floor(Math.random() * 4) + 4) // 4-7 trees
+        scene.add(treesGroup)
 
         // Add to scene and tracking
         scene.add(cube)
