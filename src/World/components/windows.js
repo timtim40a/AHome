@@ -19,7 +19,7 @@ function createWindows(cubeWidth, cubeHeight, cubeDepth, gridSize) {
 
     // Calculate spacing
     const spacingX = cubeWidth / (gridSize + 1)
-    const spacingY = spacingX / (gridSize + 1)
+    const spacingY = cubeHeight / (gridSize + 1)
 
     // Create windows in a grid on the front face
     for (let i = 1; i <= gridSize; i++) {
