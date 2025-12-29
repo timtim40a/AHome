@@ -15,7 +15,7 @@ function createWindows(
     const baseWindowSize = Math.min(cubeWidth, cubeHeight) * windowSizeFactor
     const windowWidth = baseWindowSize * Math.sqrt(windowAspectRatio)
     const windowHeight = baseWindowSize / Math.sqrt(windowAspectRatio)
-    const windowDepth = cubeDepth * 0.01 // Thin windows
+    const windowDepth = cubeDepth * 0.015 // Thin windows
 
     // Create window geometry (will be adjusted if needed)
     const geometry = new BoxGeometry(windowWidth, windowHeight, windowDepth)
@@ -28,7 +28,7 @@ function createWindows(
 
     // Calculate spacing
     const spacingX = cubeWidth / (gridWidth + 1)
-    const spacingY = cubeHeight / (gridHeight + 1)
+    let spacingY = cubeHeight / (gridHeight + 1)
 
     // Ensure windows don't intersect by checking if they're too large for the grid
     const maxAllowedWidth = spacingX * 0.8 // Leave 20% margin for spacing
@@ -46,6 +46,10 @@ function createWindows(
     if (sizeRatio < 1) {
         adjustedWindowWidth = windowWidth * sizeRatio
         adjustedWindowHeight = windowHeight * sizeRatio
+    }
+
+    if (spacingY > adjustedWindowHeight * 2) {
+        spacingY = adjustedWindowHeight * 2
     }
 
     // Create new geometry with adjusted dimensions

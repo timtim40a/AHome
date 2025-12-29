@@ -11,6 +11,7 @@ import { Loop } from './systems/Loop.js'
 import { createPyramidRoof } from './components/pyramidRoof.js'
 import { createWindows } from './components/windows.js'
 import { createFlatRoof } from './components/flatRoof.js'
+import { createGround } from './components/ground.js'
 
 let camera
 let scene
@@ -34,7 +35,15 @@ class World {
         controls = createCameraControls(camera, renderer.domElement)
         controls.tick = () => controls.update()
 
+        // Enable shadows in the renderer
+        renderer.shadowMap.enabled = true
+        renderer.shadowMap.type = 2 // PCFSoftShadowMap
+
         const light = createLights()
+
+        // Create and add ground
+        const ground = createGround()
+        scene.add(ground)
 
         scene.add(light)
 
@@ -82,6 +91,9 @@ class World {
             0 // Consistent z position
         )
 
+        // Enable shadow casting on the cube
+        cube.castShadow = true
+
         // Add windows as children of the cube
         // Calculate aspect ratio to determine window grid distribution
         const aspectRatio = cubeHeight / cubeWidth
@@ -118,8 +130,8 @@ class World {
         const gridHeight = Math.max(1, baseGridHeight)
 
         // Generate random window properties independent of cube dimensions
-        const windowAspectRatio = Math.random() * 2 + 0.5 // Random aspect ratio between 0.5 and 2.5
-        const windowSizeFactor = Math.random() * 0.15 + 0.05 // Random size factor between 0.05 and 0.2
+        const windowAspectRatio = Math.random() * 1 + 0.2 // Random aspect ratio between 0.5 and 2.5
+        const windowSizeFactor = Math.random() * 0.25 + 0.25 // Random size factor between 0.05 and 0.2
 
         const windows = createWindows(
             cubeWidth,
@@ -150,6 +162,7 @@ class World {
                 roofColor
             )
             pyramidRoof.position.set(0, cubeHeight / 2 + roofHeight / 2, 0)
+            pyramidRoof.castShadow = true
             cube.add(pyramidRoof)
         } else {
             const roofHeight = Math.random() * 0.5 + 0.2 // 0.2-0.7
@@ -161,6 +174,7 @@ class World {
                 roofColor
             )
             flatRoof.position.set(0, cubeHeight / 2 + roofHeight / 2, 0)
+            flatRoof.castShadow = true
             cube.add(flatRoof)
         }
 
