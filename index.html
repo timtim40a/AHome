@@ -3,24 +3,31 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
+        <title>A Home</title>
         <link rel="stylesheet" href="styles.css" />
     </head>
     <body>
         <div id="scene-container"></div>
-        <button id="generate-house-btn">Generate Random House</button>
-        <div id="season-controls">
-            <label for="season-slider">Season:</label>
-            <input
-                type="range"
-                id="season-slider"
-                min="0"
-                max="3"
-                value="0"
-                step="1"
-            />
-            <span id="season-label">Autumn</span>
+        <div id="ui-overlay">
+            <button id="generate-house-btn">Generate Random House</button>
+            <div id="season-controls">
+                <label for="season-slider">Season:</label>
+                <input
+                    type="range"
+                    id="season-slider"
+                    min="0"
+                    max="3"
+                    value="0"
+                    step="1"
+                />
+                <span id="season-label">Autumn</span>
+            </div>
         </div>
+        <footer>
+            <p>Built by Tymur Soroka as a New Year's gift for Vlad Zernov</p>
+            <a href="https://github.com/timtim40a/AHome">GitHub Repository</a>
+            <p>© 2025 A Home. All rights reserved.</p>
+        </footer>
     </body>
     <script type="module" src="main.js"></script>
 </html>
