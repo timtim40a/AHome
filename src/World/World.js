@@ -83,8 +83,40 @@ class World {
         )
 
         // Add windows as children of the cube
-        const gridWidth = Math.floor(Math.random() * 6) + 1 // 1-6 windows across
-        const gridHeight = Math.floor(Math.random() * 6) + 1 // 1-6 windows tall
+        // Calculate aspect ratio to determine window grid distribution
+        const aspectRatio = cubeHeight / cubeWidth
+
+        // Base grid sizes (1-6 for each dimension)
+        let baseGridWidth = Math.floor(Math.random() * 6) + 1
+        let baseGridHeight = Math.floor(Math.random() * 6) + 1
+
+        // Adjust based on building proportions
+        if (aspectRatio > 1.2) {
+            // Tall and thin building - favor more rows, fewer columns
+            baseGridHeight = Math.max(
+                baseGridHeight,
+                Math.floor(baseGridHeight * 1.5)
+            )
+            baseGridWidth = Math.min(
+                baseGridWidth,
+                Math.max(1, Math.floor(baseGridWidth * 0.7))
+            )
+        } else if (aspectRatio < 0.8) {
+            // Low and wide building - favor more columns, fewer rows
+            baseGridWidth = Math.max(
+                baseGridWidth,
+                Math.floor(baseGridWidth * 1.5)
+            )
+            baseGridHeight = Math.min(
+                baseGridHeight,
+                Math.max(1, Math.floor(baseGridHeight * 0.7))
+            )
+        }
+
+        // Ensure minimum of 1 for each dimension
+        const gridWidth = Math.max(1, baseGridWidth)
+        const gridHeight = Math.max(1, baseGridHeight)
+
         const windows = createWindows(
             cubeWidth,
             cubeHeight,
