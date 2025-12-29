@@ -65,7 +65,7 @@ class World {
         // Generate random parameters
         const cubeWidth = Math.random() * 2 + 1 // 1-3
         const cubeHeight = Math.random() * 2 + 1 // 1-3
-        const cubeDepth = Math.random() * 2 + 1 // 1-3
+        const cubeDepth = cubeWidth
         const cubeColor = new Color(Math.random(), Math.random(), Math.random())
 
         // Create cube (house base)
@@ -94,12 +94,14 @@ class World {
 
         // Add roof as child of the cube (either pyramid or flat)
         const usePyramidRoof = Math.random() > 0.5
+        const roofRandomOffset = Math.random() * 0.2
         const roofColor = new Color(Math.random(), Math.random(), Math.random())
 
         if (usePyramidRoof) {
             const roofHeight = Math.random() * 1 + 0.5 // 0.5-1.5
             const pyramidRoof = createPyramidRoof(
                 cubeWidth,
+                roofRandomOffset,
                 roofHeight,
                 roofColor
             )
@@ -111,6 +113,7 @@ class World {
                 cubeWidth,
                 cubeDepth,
                 roofHeight,
+                roofRandomOffset,
                 roofColor
             )
             flatRoof.position.set(0, cubeHeight / 2 + roofHeight / 2, 0)
