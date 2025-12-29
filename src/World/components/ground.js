@@ -1,8 +1,8 @@
-import { PlaneGeometry, Mesh, MeshLambertMaterial } from 'three'
+import { PlaneGeometry, Mesh, MeshLambertMaterial, CircleGeometry } from 'three'
 
 function createGround() {
     // Create a large plane for the ground
-    const geometry = new PlaneGeometry(50, 50)
+    const geometry = new CircleGeometry(50, 50)
 
     // Use the same color as the scene background
     const material = new MeshLambertMaterial({ color: 0x222222 })

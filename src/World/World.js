@@ -19,16 +19,42 @@ let scene
 let renderer
 let loop
 let houses = [] // Array to track generated houses
+let ground // Reference to the ground object
 let treesGroup // Group to hold all trees
 let controls // Camera controls
+let light // Reference to the main light
 let possibleRoofColors = [0xeb6e34, 0xebf0f2, 0x6b3115, 0x234201, 0x616161] // DarkRed, Brown, ForestGreen, DarkBlue
+let possibleWinterRoofColors = [
+    0xf5f5f5, 0xe8e8e8, 0xd3d3d3, 0xb0c4de, 0x778899,
+] // Very light greys and bluish grey
 let possibleBuildingColors = [0xf5f5dc, 0xffefd5, 0xd2b48c, 0xdeb887, 0xa0522d] // Beige, PapayaWhip, Tan, BurlyWood, Sienna
+let currentSeason = 0 // 0: Autumn, 1: Winter, 2: Spring, 3: Summer
 
-function createTrees(count = 5) {
+function getFoliageColorForSeason(season) {
+    switch (season) {
+        case 'winter':
+            return 0xffffff // White for winter
+        case 'spring':
+            return Math.random() < 0.5 ? 0x00ff00 : 0xff69b4 // Lime or pink for spring
+        case 'summer':
+            return 0x228b22 // Green for summer
+        case 'autumn':
+        default:
+            // Original autumn colors
+            const foliageColors = [
+                0x228b22, 0x32cd32, 0x006400, 0xff6347, 0xffa500, 0xdc143c,
+            ] // Green and autumn colors
+            return foliageColors[
+                Math.floor(Math.random() * foliageColors.length)
+            ]
+    }
+}
+
+function createTrees(count = 5, season = 'autumn') {
     const trees = new Group()
 
     for (let i = 0; i < count; i++) {
-        const tree = createTree()
+        const tree = createTree(season)
 
         // Position trees randomly around the scene (closer since trees are smaller)
         const angle = (i / count) * Math.PI * 2
@@ -65,10 +91,10 @@ class World {
         renderer.shadowMap.enabled = true
         renderer.shadowMap.type = 2 // PCFSoftShadowMap
 
-        const light = createLights()
+        light = createLights()
 
         // Create and add ground
-        const ground = createGround()
+        ground = createGround()
         scene.add(ground)
 
         scene.add(light)
@@ -86,6 +112,22 @@ class World {
         const button = document.getElementById('generate-house-btn')
         if (button) {
             button.addEventListener('click', () => this.generateRandomHouse())
+        }
+
+        // Set up season slider
+        const seasonSlider = document.getElementById('season-slider')
+        const seasonLabel = document.getElementById('season-label')
+        if (seasonSlider && seasonLabel) {
+            const seasonNames = ['Autumn', 'Winter', 'Spring', 'Summer']
+            seasonLabel.textContent = seasonNames[currentSeason]
+
+            seasonSlider.addEventListener('input', (event) => {
+                currentSeason = parseInt(event.target.value)
+                seasonLabel.textContent = seasonNames[currentSeason]
+
+                // Update tree colors for the new season without regenerating house
+                this.updateSeasonVisuals()
+            })
         }
     }
 
@@ -178,9 +220,13 @@ class World {
         // Add roof as child of the cube (either pyramid or flat)
         const usePyramidRoof = Math.random() > 0.5
         const roofRandomOffset = Math.random() * 0.2
+        const isWinter = currentSeason === 1 // 1 is winter
+        const roofColorPalette = isWinter
+            ? possibleWinterRoofColors
+            : possibleRoofColors
         const roofColor = new Color(
-            possibleRoofColors[
-                Math.floor(Math.random() * possibleRoofColors.length)
+            roofColorPalette[
+                Math.floor(Math.random() * roofColorPalette.length)
             ]
         )
 
@@ -210,13 +256,68 @@ class World {
         }
 
         // Generate new trees
-        treesGroup = createTrees(Math.floor(Math.random() * 4) + 4) // 4-7 trees
+        const seasonNames = ['autumn', 'winter', 'spring', 'summer']
+        const currentSeasonName = seasonNames[currentSeason]
+        treesGroup = createTrees(
+            Math.floor(Math.random() * 4) + 4,
+            currentSeasonName
+        ) // 4-7 trees
         scene.add(treesGroup)
 
         // Add to scene and tracking
         scene.add(cube)
         //loop.updatables.push(cube)
         houses.push({ cube: cube })
+    }
+
+    updateSeasonVisuals() {
+        // Update scene background based on season
+        const seasonBackgrounds = {
+            0: 0x222222, // Autumn - warm brown
+            1: 0x222222, // Winter - light blue-white
+            2: 0x98b4f4, // Spring - pale blue
+            3: 0xf3d690, // Summer - orange
+        }
+        const seasonGround = {
+            0: 0x222222, // Autumn - dark brown
+            1: 0xdddddd, // Winter - light grey (snowy)
+            2: 0x207b38, // Spring - green
+            3: 0x006400, // Summer - dark green
+        }
+        scene.background = new Color(seasonBackgrounds[currentSeason])
+        ground.material.color.setHex(seasonGround[currentSeason])
+
+        light.children.forEach((child) => {
+            if (child.isDirectionalLight) {
+                // Adjust light color and intensity based on season
+                const seasonLightSettings = {
+                    0: { color: 0xf38630, intensity: 4 }, // Autumn
+                    1: { color: 0xd36620, intensity: 3 }, // Winter
+                    2: { color: 0xeeeebb, intensity: 5 }, // Spring
+                    3: { color: 0xffa142, intensity: 5 }, // Summer
+                }
+                child.color.setHex(seasonLightSettings[currentSeason].color)
+                child.intensity = seasonLightSettings[currentSeason].intensity
+            }
+        })
+
+        // Update tree foliage colors for the new season
+        if (treesGroup) {
+            const seasonNames = ['autumn', 'winter', 'spring', 'summer']
+            const currentSeasonName = seasonNames[currentSeason]
+
+            treesGroup.children.forEach((tree) => {
+                // Skip the trunk (first child) and update foliage colors
+                for (let i = 1; i < tree.children.length; i++) {
+                    const foliage = tree.children[i]
+                    if (foliage.material) {
+                        foliage.material.color.setHex(
+                            getFoliageColorForSeason(currentSeasonName)
+                        )
+                    }
+                }
+            })
+        }
     }
 
     // 2. Render the scene

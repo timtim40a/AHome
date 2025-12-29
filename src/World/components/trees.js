@@ -7,7 +7,7 @@ import {
 } from 'three'
 import { Color } from 'three'
 
-function createTree() {
+function createTree(season) {
     const tree = new Group()
 
     // Tree trunk - brown cylinder (smaller)
@@ -25,12 +25,28 @@ function createTree() {
     trunk.castShadow = true
     tree.add(trunk)
 
-    // Choose one consistent foliage color for this tree
-    const foliageColors = [
-        0x228b22, 0x32cd32, 0x006400, 0xff6347, 0xffa500, 0xdc143c,
-    ] // Green and autumn colors
-    const treeFoliageColor =
-        foliageColors[Math.floor(Math.random() * foliageColors.length)]
+    // Choose foliage color based on season
+    let treeFoliageColor
+    switch (season) {
+        case 'winter':
+            treeFoliageColor = 0xffffff // White for winter
+            break
+        case 'spring':
+            treeFoliageColor = Math.random() < 0.5 ? 0x00dd00 : 0xdd59a4 // Lime or pink for spring
+            break
+        case 'summer':
+            treeFoliageColor = 0x228b22 // Green for summer
+            break
+        case 'autumn':
+        default:
+            // Original autumn colors
+            const foliageColors = [
+                0x228b22, 0x32cd32, 0x006400, 0xff6347, 0xffa500, 0xdc143c,
+            ] // Green and autumn colors
+            treeFoliageColor =
+                foliageColors[Math.floor(Math.random() * foliageColors.length)]
+            break
+    }
 
     // Foliage - multiple ellipsoids (smaller)
     const foliageCount = Math.floor(Math.random() * 3) + 2 // 2-4 foliage pieces
